@@ -129,7 +129,7 @@ Coverage includes: model validation and ordering, single create (success, email-
 
 ## Estimated Time Spent
 
-Approximately 1 hours, including backend API, frontend UI, tests, and documentation.
+Approximately 1 hour, including backend API, frontend UI, tests, and documentation.
 
 ---
 
