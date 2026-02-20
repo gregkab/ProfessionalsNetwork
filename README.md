@@ -64,12 +64,10 @@ Open http://localhost:5173 in your browser. The frontend communicates with the D
 ### Bulk Upsert — `POST /api/professionals/bulk/`
 
 ```json
-{
-  "professionals": [
-    { "full_name": "Jane Doe", "email": "jane@example.com", "source": "partner" },
-    { "full_name": "John Smith", "phone": "555-0200", "source": "internal" }
-  ]
-}
+[
+  { "full_name": "Jane Doe", "email": "jane@example.com", "source": "partner" },
+  { "full_name": "John Smith", "phone": "555-0200", "source": "internal" }
+]
 ```
 
 Returns per-item results with status `created`, `updated`, or `error` to support partial success.
@@ -84,6 +82,8 @@ Returns per-item results with status `created`, `updated`, or `error` to support
 - The **bulk endpoint** processes items sequentially to guarantee per-record error isolation. For very large batches, this could be optimized with `bulk_create` / `bulk_update` and database transactions.
 - **No authentication** is implemented — this is a prototype.
 - The frontend uses simple tab-based navigation rather than a router, keeping the prototype lightweight.
+- **Naming: `phone` vs `phone_number`** — the prompt uses `phone_number` in the bulk endpoint description but `phone` in the model spec. I used `phone` consistently across all endpoints and the model for simplicity.
+- **Phone uniqueness** — the model spec doesn't explicitly mark `phone` as unique, but the single-create endpoint spec requires unique phone validation, and the bulk endpoint uses phone as a fallback upsert key (which implies uniqueness). I added a unique constraint on `phone` to satisfy both requirements.
 
 ---
 
@@ -116,14 +116,14 @@ A two-pass approach (heuristics for high-confidence fields, LLM for the rest) ba
 
 ## Tests
 
-The backend includes 15 tests covering all three endpoints and the model layer:
+The backend includes 23 tests organized into separate modules covering all three endpoints and the model layer:
 
 ```bash
 cd backend
 python manage.py test professionals -v2
 ```
 
-Coverage includes: single create (success, duplicate email/phone, invalid source, missing contact info), list (all, filtered, empty filter), bulk (create, upsert-by-email, upsert-by-phone-fallback, partial success, invalid input), and model validation.
+Coverage includes: model validation and ordering, single create (success, email-only, phone-only, duplicate email/phone, invalid source, missing required fields), list (all, filtered, empty filter, response field completeness), and bulk (create, upsert-by-email, upsert-by-phone-fallback, email-priority over phone, partial success, empty list, invalid input).
 
 ---
 

@@ -19,16 +19,16 @@ class ProfessionalListCreateView(generics.ListCreateAPIView):
 
 class BulkCreateView(APIView):
     """
-    Accepts {"professionals": [...]}.
-    Upserts each entry by email (primary key), falling back to phone.
+    Accepts a JSON list of professional profiles.
+    Upserts each entry by email, falling back to phone as the unique key.
     Returns per-item results to support partial success.
     """
 
     def post(self, request):
-        items = request.data.get("professionals", [])
+        items = request.data
         if not isinstance(items, list):
             return Response(
-                {"error": "'professionals' must be a list."},
+                {"error": "Expected a JSON list of professional profiles."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
