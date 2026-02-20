@@ -46,7 +46,7 @@ Open http://localhost:5173 in your browser. The frontend communicates with the D
 | ------ | --------------------------- | ------------------------------------------------ |
 | GET    | `/api/professionals/`       | List all professionals (optional `?source=` filter) |
 | POST   | `/api/professionals/`       | Create a single professional                     |
-| POST   | `/api/professionals/bulk`   | Bulk create/update (upsert by email, then phone) |
+| POST   | `/api/professionals/bulk/`  | Bulk create/update (upsert by email, then phone) |
 
 ### Single Create — `POST /api/professionals/`
 
@@ -61,7 +61,7 @@ Open http://localhost:5173 in your browser. The frontend communicates with the D
 }
 ```
 
-### Bulk Upsert — `POST /api/professionals/bulk`
+### Bulk Upsert — `POST /api/professionals/bulk/`
 
 ```json
 {

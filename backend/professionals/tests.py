@@ -114,7 +114,7 @@ class ListEndpointTest(TestCase):
 class BulkEndpointTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.url = "/api/professionals/bulk"
+        self.url = "/api/professionals/bulk/"
 
     def test_bulk_create(self):
         payload = {
