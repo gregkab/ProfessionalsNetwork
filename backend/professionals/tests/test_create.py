@@ -93,3 +93,24 @@ class SingleCreateEndpointTest(TestCase):
         res = self.client.post(self.url, payload, format="json")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("source", res.data)
+
+    def test_empty_email_does_not_violate_unique(self):
+        """Multiple submissions with blank email should not cause IntegrityError."""
+        payload_a = {
+            "full_name": "Person A",
+            "email": "",
+            "phone": "555-8001",
+            "source": "direct",
+        }
+        payload_b = {
+            "full_name": "Person B",
+            "email": "",
+            "phone": "555-8002",
+            "source": "direct",
+        }
+        res_a = self.client.post(self.url, payload_a, format="json")
+        res_b = self.client.post(self.url, payload_b, format="json")
+        self.assertEqual(res_a.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res_b.status_code, status.HTTP_201_CREATED)
+        self.assertIsNone(res_a.data["email"])
+        self.assertIsNone(res_b.data["email"])

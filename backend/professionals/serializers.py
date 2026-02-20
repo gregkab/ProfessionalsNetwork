@@ -19,7 +19,9 @@ class ProfessionalSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at"]
 
     def validate(self, attrs):
-        if not attrs.get("email") and not attrs.get("phone"):
+        attrs["email"] = attrs.get("email") or None
+        attrs["phone"] = attrs.get("phone") or None
+        if not attrs["email"] and not attrs["phone"]:
             raise serializers.ValidationError(
                 "At least one of email or phone must be provided."
             )

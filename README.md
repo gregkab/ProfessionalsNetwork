@@ -91,12 +91,12 @@ Returns per-item results with status `created`, `updated`, or `error` to support
 
 ### How would the system process and interpret the content of the uploaded PDF?
 
-Use a Python PDF extraction library like **pdfplumber** or **PyPDF2** to pull raw text from the uploaded file. The extracted text can then be fed through:
+There are two viable approaches:
 
-1. **Regex / heuristic parsing** — look for patterns like email addresses, phone numbers, section headers ("Experience", "Education").
-2. **LLM-based extraction** — send the raw text to a language model (e.g., OpenAI API) with a structured prompt asking it to return JSON with fields like `full_name`, `email`, `phone`, `job_title`, `company_name`. This gives better accuracy on varied resume formats.
+1. **Multimodal LLM** — send the PDF directly to a vision-capable model (e.g., GPT-4o, Claude). The LLM can "see" the document layout, making it effective even for multi-column or creatively formatted resumes.
+2. **Text extraction + LLM** — use a library like **pdfplumber** to extract raw text first, then send the text to an LLM with a structured output prompt to return JSON with `full_name`, `email`, `phone`, `job_title`, `company_name`.
 
-A two-pass approach (heuristics for high-confidence fields, LLM for the rest) balances cost and accuracy.
+I'd go with option 2. The fields we need (name, email, phone, company) are plain-text content that survives text extraction cleanly regardless of visual layout, we don't need the model to interpret column structure or design elements. Extracting text first reduces token costs and allows the use of cheaper, faster text-only models, which matters at scale.
 
 ### What is the proposed method for handling the actual file upload?
 
@@ -129,7 +129,7 @@ Coverage includes: model validation and ordering, single create (success, email-
 
 ## Estimated Time Spent
 
-Approximately 2 hours, including backend API, frontend UI, tests, and documentation.
+Approximately 1 hours, including backend API, frontend UI, tests, and documentation.
 
 ---
 

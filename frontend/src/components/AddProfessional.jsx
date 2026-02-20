@@ -103,7 +103,7 @@ export default function AddProfessional({ onCreated }) {
           {typeof errors === "object"
             ? Object.entries(errors).map(([key, val]) => (
                 <p key={key}>
-                  <strong>{key}:</strong>{" "}
+                  {key !== "non_field_errors" && <strong>{key}: </strong>}
                   {Array.isArray(val) ? val.join(", ") : String(val)}
                 </p>
               ))
